@@ -1,0 +1,10 @@
+numpy>=2.3
+pandas>=2.3
+scikit-learn>=1.8
+lightgbm>=4.6
+statsmodels>=0.14
+skforecast>=0.20
+awswrangler>=3.15
+feature_engine>=1.9
+matplotlib>=3.10
+seaborn>=0.13

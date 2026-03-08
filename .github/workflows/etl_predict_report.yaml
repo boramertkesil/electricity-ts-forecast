@@ -1,0 +1,44 @@
+name: ETL-Predict-Report
+
+on:
+  schedule:
+  - cron: "0 0 * * *"
+  workflow_dispatch:
+
+env:
+  EPIAS_USERNAME: ${{ secrets.EPIAS_USERNAME }}
+  EPIAS_PASSWORD: ${{ secrets.EPIAS_PASSWORD }}
+
+jobs:
+  etl_predict_report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository content
+        uses: actions/checkout@v2
+
+      - name: Setup Python Version
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.0.0
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Run ETL
+        run: python -m src.jobs.etl
+
+      - name: Run Forecast
+        run: python -m src.jobs.forecast
+
+      - name: Generate Report
+        run: python -m src.jobs.report

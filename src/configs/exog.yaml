@@ -1,0 +1,26 @@
+pipeline:
+  - name: "dt_features"
+    type: "DatetimeFeatures"
+    params:
+      variables: "index"
+      features_to_extract: ["month","week","hour","day_of_week"]
+      drop_original: true
+
+  - name: "reduce_dim"
+    type: "WeightedAverage"
+    params:
+      weight_map:
+        istanbul_temp: 22.28
+        ankara_temp:    7.19
+        izmir_temp:     7.06
+        antalya_temp:   5.45
+        bursa_temp:     4.38
+      output_name: "temp_weighted"
+      drop_original: true
+
+  - name: "window_features"
+    type: "WindowFeatures"
+    params:
+      variables: ["temp_weighted"]
+      window: [24,168]
+      functions: ["mean","max","min"]

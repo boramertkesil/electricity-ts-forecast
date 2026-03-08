@@ -1,0 +1,23 @@
+s3:
+  bucket: ts-forecast-boramkesil
+
+  datasets:
+    features:
+      prefix: tr_consumption_temperature_hourly
+      mode: overwrite_partitions
+      partition_columns: [date]
+      glue_catalog:
+        database: ts-forecast
+        table: tr_consumption_temperature_hourly
+    
+    forecasts:
+      prefix: predictions_daily
+      mode: overwrite_partitions
+      partition_columns: [date]
+      glue_catalog:
+        database: null
+        table: null
+
+  forecaster:
+    id: lgbm_recursive_v1
+  

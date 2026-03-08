@@ -1,0 +1,20 @@
+locations:
+  - name: istanbul
+    latitude: 41.0082
+    longitude: 28.9784
+
+  - name: ankara
+    latitude: 39.9334
+    longitude: 32.8597
+
+  - name: izmir
+    latitude: 38.4237
+    longitude: 27.1428
+
+  - name: antalya
+    latitude: 36.8969
+    longitude: 30.7133
+
+  - name: bursa
+    latitude: 40.1950
+    longitude: 29.0600
