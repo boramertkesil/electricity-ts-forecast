@@ -7,6 +7,7 @@ import matplotlib.dates as mdates
 import pandas as pd
 
 from src.data.storage.partition_filters import dates_between
+from src.data.storage.stores.figure import write_figure
 from src.jobs.utils import get_today
 from skforecast.plot import set_dark_theme
 from src.configs.config import (
@@ -49,15 +50,20 @@ def run(
     actual_hist = actual_hist["consumption"]
 
     # plot and save results
-    logging.info("Writing results...")
-    _plot_forecast(pred_future, today)
-    _plot_hist(pred_hist, actual_hist, today)
+    logging.info("Writing results to S3...")
+    fig_forecast = _plot_forecast(pred_future, today)
+    fig_hist = _plot_hist(pred_hist, actual_hist, today)
+
+    s3_bucket = get_s3_bucket(storage_cfg)
+
+    write_figure(fig_forecast, "forecast_day_ahead.png", s3_bucket)
+    write_figure(fig_hist, "actual_vs_forecast_last_7_days.png", s3_bucket)
 
     logging.info(f"Report job completed successfully")
 
 
 def _plot_forecast(pred_future: pd.DataFrame, last_update: date):
-    """Plot forecasted values"""
+    """Return a matplotlib figure for forecasted values"""
     set_dark_theme()
 
     fig, ax = plt.subplots(figsize=(14, 6), constrained_layout=True)
@@ -95,10 +101,10 @@ def _plot_forecast(pred_future: pd.DataFrame, last_update: date):
         color="0.75"
     )
 
-    fig.savefig("reports/forecast_day_ahead.png")
+    return fig
 
 def _plot_hist(pred_hist: pd.DataFrame, actual_hist: pd.DataFrame, last_update: date):
-    """Plot actual vs predicted values"""
+    """Return a matplotlib figure for actual vs predicted values"""
     set_dark_theme()
 
     fig, ax = plt.subplots(figsize=(14, 6), constrained_layout=True)
@@ -132,8 +138,7 @@ def _plot_hist(pred_hist: pd.DataFrame, actual_hist: pd.DataFrame, last_update: 
         color="0.75"
     )
 
-    fig.savefig("reports/actual_vs_forecast_last_7_days.png")
-
+    return fig
 
 
 def _get_predictions(start_date: date, end_date: date, storage_cfg: dict) -> pd.DataFrame:

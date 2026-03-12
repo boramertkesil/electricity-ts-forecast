@@ -37,3 +37,7 @@ class S3Bucket:
     def forecaster_uri(self, forecaster: str) -> str:
         """Forecaster root URI"""
         return f"{self.base_uri}/forecasters/{forecaster}"
+    
+    def figure_uri(self, figure: str) -> str:
+        """Figures root URI"""
+        return f"{self.base_uri}/reports/{figure}"
