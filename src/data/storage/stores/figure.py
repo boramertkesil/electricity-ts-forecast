@@ -35,4 +35,8 @@ def write_figure(
             local_file=buffer,
             path=s3_bucket.figure_uri(fig_name),
             boto3_session=s3_bucket.session,
+            s3_additional_kwargs={
+                "ContentType": "image/png",
+                "CacheControl": "no-cache"
+            }
         )
